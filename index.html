@@ -50,16 +50,27 @@ else {
 });
 	all_markers.push(marker);
     }
+	    old_position = new google.maps.Marker({
+	position: {lat: 44.7468069, lng: -93.2001355}
+	map zombie_map
+})
 };
 
+var old_position;
+	
 function set_my_position(position){
 
+old_position.setMap(null);
+	
 var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 var marker = new google.maps.Marker({
 	position: pos,
 	map: zombie_map
 
 })
+
+old_position = marker;
+
 }
 
 var data = `44.7263930456256 -93.17456740239288 zombie.png 
