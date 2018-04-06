@@ -7,7 +7,7 @@
     left: 0;
     position: absolute;
     top: 0;  
-    background-color: grey;
+    background-color: red;
 }
 </style>
     <title>Where's Zombie</title>
@@ -31,31 +31,60 @@ else {
     alert("Geolocation doesn't work in your browser");
 }
 
-	for(var i=0; i < markers.length; i++){
-		var marker_data = markers[i].trim();
-		marker_data = marker_data.split(" ");
-		var latitude = marker_data[0];
-		var longitude = marker_data[1];
-		var emoji = marker_data[2];
-
-		var marker_position = new google.maps.LatLng(latitude, longitude);
-		var marker = new google.maps.Marker({
-  			position: marker_position,
-  			map: zombie_map,
-			icon: emoji
-		
-});
-	all_markers.push(marker);
-    }
-
 old_position = new google.maps.Marker({
 
 	position: {lat: 44.7468069, lng: -93.2001355},
 	map: zombie_map
 
-})
+});
 
+if( all_markers.length < 50) {
+
+	while(all_markers.length < 50){
+	
+		var latitude = randomInRange(low_latitude, high_latitude);
+		var longitude = randomInRange(low_longitude, high_longitude);
+		
+		var number = getRandomInt(0, 2);
+		var icon = icons[number];
+
+		var marker_position = new google.maps.LatLng(latitude, longitude);
+		var marker = new google.maps.Marker({
+			position: marker_position,
+			map: zombie_map,
+			icon: icon 
+});
+
+		all_markers.push(marker);
+
+}
+}
+
+else if( all_markers.length === 50 ){
+
+	while(all_markers.length = 50){
+
+		var time = getRandomInt(30000, 60000);
+		sleep(time);
+
+		var chosen_marker = getRandomInt(0, 49);
+		delete all_markers[chosen_marker];
+
+}
 };
+};
+
+var searchData = [];
+
+var inventory = [];
+
+var icons = ["zombie.png", "hospital.png", "weapons.png"];
+
+var high_latitude = 44.726419101802946;
+var high_longitude = -93.17350878204752;
+
+var low_latitude = 44.72573457140122;
+var low_longitude = -93.17648603405405;
 
 var all_markers = [];
 
@@ -90,81 +119,116 @@ if( distance < tolerance ){
     
     var what_is_it = all_markers[i].getIcon();
     what_is_it = what_is_it.replace(".png", "");
-    alert("You found the " + what_is_it );
-    all_markers[i].setMap(null);
+    delete all_markers[i];
+    inventory.push(what_is_it)
 
     if( what_is_it === "hospital" ){
 
 	alert(hospital_description);
 
-};
+}
 
     else if( what_is_it === "weapons" ){
 	 
 	alert(weapons_description);
 
-};
+}
 
     else{
 	
 	alert(zombie_description);
 	
-};
+}
 
 
-    if( what_is_it != "zombie"){
+    if( what_is_it === "hospital"){
 
-	score += 10;
-	alert("Your score is " + score);
+	score += 4;
+	alert("You have found the hospital!");
+}
 
-};
+    else if( what_is_it === "weapons"){
+
+	score += 7;
+	alert("You have found some weapons!");
+
+}
 
     else{
 
-	score -= 10;
-	alert("Your score is " + score);
+	alert("You have found the zombies!");
+	var searchResponse = search(inventory, "hospital");
+	if(searchResponse == true){
+	    alert("The hospital came and healed you!");
+	    remove(inventory, "hospital");	
+	}
+	else{
 
-};
+	    var searchResponse = search(inventory, "weapons");
+	    
+	    if(searchResponse == true){
+		alert("You used some of your weapons to fight the zombies!");
+		remove(inventory, "weapons");
+}
+	    else{
+	
+		score - 10;
+		alert("The zombies have eaten you brains!");
+		alert("Your score is " + score);
+		
+}
+}	
+}
 
-};
+}
 
-};
-};
+}
 
-var data = `44.7263930456256 -93.17456740239288 zombie.png 
-44.72584802902374 -93.17556518414642 hospital.png
-44.72582897240628 -93.17360180714752 weapons.png
-44.725459272785436 -93.17468541958954 weapons.png
-44.72613006622803 -93.17490536072876 weapons.png
-44.72607408703426 -93.1751467595401 weapons.png
-44.72554431280074 -93.17546326020386 zombie.png
-44.726077898342126 -93.17566710808899 zombie.png
-44.72611601140672 -93.17336577275421 zombie.png
-44.7263942360177 -93.17361790040161 zombie.png
-44.725955936366574 -93.17324775555755 zombie.png
-44.72556336951196 -93.17588168481018 zombie.png
-44.725399481590244 -93.1757958541217 zombie.png
-44.72540329294253 -93.17562955716278 zombie.png
-44.725410915646336 -93.1754364381137 zombie.png
-44.72530800905991 -93.17546326020386 zombie.png
-44.72551382204971 -93.17356962063934 zombie.png
-44.725456651848226 -93.17389685013916 zombie.png
-44.725460463196754 -93.17406314709808 zombie.png
-44.72599404951158 -93.17446547845032 zombie.png
-44.726032162631434 -93.17419725754883 zombie.png
-44.72600167213754 -93.17495364049103 weapons.png
-44.72534231127574 -93.17515748837616 weapons.png
-44.7253461226318 -93.1746800551715 weapons.png
-44.725860653394285 -93.1732745776477 weapons.png
-44.72624559563861 -93.17356425622131 weapons.png
-44.725418538349174 -93.17602652409698 weapons.png
-44.725216536384984 -93.1757583031955 weapons.png
-44.72546808589303 -93.17440646985199 hospital.png`;
+}
 
-var markers = data.split("\n");
+
+function randomInRange(min, max) {
+  return Math.random() < 0.5 ? ((1-Math.random()) * (max-min) + min) : (Math.random() * (max-min) + min);
+}
+
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function sleep(milliseconds) {
+  var start = new Date().getTime();
+  for (var i = 0; i < 1e7; i++) {
+    if ((new Date().getTime() - start) > milliseconds){
+      break;
+    }
+  }
+}
+
+function search(array, needed){
+
+    for(var i=0; i < array.length; i++){
+
+	if(array[i] === needed){
+		return true;
+	}	
+
+    }
+    return false;
+}
+
+function remove(array, element_to_be_removed){
+
+    for(var i=0; i < array.length; i++){
+
+	if(array[i] === element_to_be_removed){
+	    delete array[i];
+	    break;
+	}
+    }
+}
 
 </script>
-<script async="" defer="" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBZOyPWnwxXJ806PXOA5bIx3UrMTOlrJX4&amp;callback=initMap&libraries=geometry"> 
+<script async="" defer="" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAuSeasVvUthyVk0FQxRm7f3IWPyT_LQzs&amp;callback=initMap&libraries=geometry"> 
 </script>
     Items I want to appear on my page will go here
   </body>
