@@ -37,10 +37,12 @@ old_position = new google.maps.Marker({
 	map: zombie_map
 
 });
+reloadMarkers();
+}
+async function reloadMarkers() {
+if( all_markers.length < 100) {
 
-if( all_markers.length < 50) {
-
-	while(all_markers.length < 50){
+	while(all_markers.length < 100){
 	
 		var latitude = randomInRange(low_latitude, high_latitude);
 		var longitude = randomInRange(low_longitude, high_longitude);
@@ -49,32 +51,41 @@ if( all_markers.length < 50) {
 		var icon = icons[number];
 
 		var marker_position = new google.maps.LatLng(latitude, longitude);
-		var marker = new google.maps.Marker({
-			position: marker_position,
-			map: zombie_map,
-			icon: icon 
-});
-
+		if(number === 0) {
+			var marker = new google.maps.Marker({
+				position: marker_position,
+				map: zombie_map,
+				icon: icon,
+				animation: google.maps.Animation.DROP 
+			});
+		}
+		else{
+			var marker = new google.maps.Marker({
+				position: marker_position,
+				map: zombie_map,
+				icon: icon,
+				animation: google.maps.Animation.BOUNCE
+			});
+		}
+		console.log("Made new marker");
 		all_markers.push(marker);
 
 }
 }
 
-else if( all_markers.length === 50 ){
-
-	while(all_markers.length = 50){
+else if( all_markers.length === 100 ){
+	console.log("Reached limit of markers");
+	while(all_markers.length === 500){
 
 		var time = getRandomInt(30000, 60000);
-		sleep(time);
+		await sleep(time);
 
-		var chosen_marker = getRandomInt(0, 49);
+		var chosen_marker = getRandomInt(0, 99);
 		delete all_markers[chosen_marker];
 
 }
 };
-};
-
-var searchData = [];
+}
 
 var inventory = [];
 
@@ -88,15 +99,15 @@ var low_longitude = -93.17648603405405;
 
 var all_markers = [];
 
-var tolerance = 5;
+var tolerance = 1;
 
 var score;
 
 var old_position;
 
-var hospital_description = `The hospial is a great way to heal when you go to a den of ZOMBIES`;
-var weapons_description = `These weapons are really handy. Chop down trees, kill some animals, but these are really used for crushing ZOMBIES`;
-var zombie_description = `The den of zombies you never wanted to go for! If you didn't find a local hospital, or some weapons, then the zombies would eat yor BRAINS`;
+var hospital_description = "The hospial is a great way to heal when you go to a den of ZOMBIES";
+var weapons_description = "These weapons are really handy. Chop down trees, kill some animals, but these are really used for crushing ZOMBIES";
+var zombie_description = "The den of zombies you never wanted to go for! If you didn't find a local hospital, or some weapons, then the zombies would eat yor BRAINS";
 
 function set_my_position(position){
 
@@ -120,7 +131,8 @@ if( distance < tolerance ){
     var what_is_it = all_markers[i].getIcon();
     what_is_it = what_is_it.replace(".png", "");
     delete all_markers[i];
-    inventory.push(what_is_it)
+    inventory.push(what_is_it);
+    console.log("You have found " + what_is_it);
 
     if( what_is_it === "hospital" ){
 
@@ -181,7 +193,14 @@ if( distance < tolerance ){
 }
 
 }
+else{
 
+var nearestItem = all_markers[i].getIcon();
+nearestItem = nearestItem.replace(".png", "");
+
+console.log("You only need to go " + distance + " meters to get to the " + nearestItem );
+
+}
 }
 
 }
@@ -195,13 +214,8 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function sleep(milliseconds) {
-  var start = new Date().getTime();
-  for (var i = 0; i < 1e7; i++) {
-    if ((new Date().getTime() - start) > milliseconds){
-      break;
-    }
-  }
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 function search(array, needed){
@@ -226,10 +240,8 @@ function remove(array, element_to_be_removed){
 	}
     }
 }
-
 </script>
 <script async="" defer="" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBZOyPWnwxXJ806PXOA5bIx3UrMTOlrJX4&amp;callback=initMap&libraries=geometry"> 
 </script>
-    Items I want to appear on my page will go here
   </body>
 </html>
