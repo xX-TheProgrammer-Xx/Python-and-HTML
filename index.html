@@ -40,9 +40,10 @@ old_position = new google.maps.Marker({
 reloadMarkers();
 }
 async function reloadMarkers() {
-if( all_markers.length < 100) {
+var length = 1000
+if( all_markers.length < length) {
 
-	while(all_markers.length < 100){
+	while(all_markers.length < length){
 	
 		var latitude = randomInRange(low_latitude, high_latitude);
 		var longitude = randomInRange(low_longitude, high_longitude);
@@ -73,13 +74,15 @@ if( all_markers.length < 100) {
 }
 }
 
-else if( all_markers.length === 100 ){
+else if( all_markers.length === length ){
 	console.log("Reached limit of markers");
-	while(all_markers.length === 500){
-
-		var time = getRandomInt(30000, 60000);
-		await sleep(time);
-
+	length = length + 1000
+	
+	var time = getRandomInt(30000, 60000);
+	await sleep(time);
+	
+	while(all_markers.length === length){
+		
 		var chosen_marker = getRandomInt(0, 99);
 		delete all_markers[chosen_marker];
 
