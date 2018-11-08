@@ -105,7 +105,7 @@ var score;
 
 var old_position;
 
-var hospital_description = "The hospial is a great way to heal when you go to a den of ZOMBIES";
+var hospital_description = "The hospital is a great way to heal when you go to a den of ZOMBIES";
 var weapons_description = "These weapons are really handy. Chop down trees, kill some animals, but these are really used for crushing ZOMBIES";
 var zombie_description = "The den of zombies you never wanted to go for! If you didn't find a local hospital, or some weapons, then the zombies would eat yor BRAINS";
 
@@ -116,7 +116,8 @@ old_position.setMap(null);
 var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 var marker = new google.maps.Marker({
 	position: pos,
-	map: zombie_map
+	map: zombie_map,
+	icon: "player.png"
 
 });
 
@@ -241,7 +242,7 @@ function remove(array, element_to_be_removed){
     }
 }
 </script>
-<script async="" defer="" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBZOyPWnwxXJ806PXOA5bIx3UrMTOlrJX4&amp;callback=initMap&libraries=geometry"> 
+<script async="" defer="" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAuSeasVvUthyVk0FQxRm7f3IWPyT_LQzs&amp;callback=initMap&libraries=geometry"> 
 </script>
   </body>
 </html>
